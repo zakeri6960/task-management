@@ -4,10 +4,12 @@ import { AppService } from './app.service';
 import { ProjectsModule } from './projects/projects.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TasksModule } from './tasks/tasks.module';
+import { Project } from './projects/entities/project.entity';
 
 @Module({
   imports: [
     ProjectsModule,
+    TasksModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -15,10 +17,10 @@ import { TasksModule } from './tasks/tasks.module';
       username: 'postgres',
       password: '1234',
       database: 'task_management',
-      entities: [__dirname + '/**/entities/*.entity{.ts, .js}'],
+      autoLoadEntities: true,
       synchronize: true,
     }),
-    TasksModule
+    
   ],
   controllers: [AppController],
   providers: [AppService],
