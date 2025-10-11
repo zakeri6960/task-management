@@ -1,26 +1,64 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Task } from './entities/task.entity';
+import { Repository } from 'typeorm';
+import { TasksStatusEnum } from 'src/Enums/taskEnums';
 
 @Injectable()
 export class TasksService {
-  create(createTaskDto: CreateTaskDto) {
-    return 'This action adds a new task';
+  constructor(
+    @InjectRepository(Task)
+    private readonly taskRepository: Repository<Task>
+  ) {}
+
+  async create(createTaskDto: CreateTaskDto) {
+    try {
+      const newTask = this.taskRepository.create(createTaskDto);
+      return await this.taskRepository.save(newTask);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
-  findAll() {
-    return `This action returns all tasks`;
+  async findAll(status?: TasksStatusEnum, page: number = 1, limit: number = 5) {
+    try {
+      const tasks = this.taskRepository.createQueryBuilder();
+      if(status){
+        tasks.where('status= :x', {x: status});
+      }
+      tasks.skip((page - 1) * limit).limit(limit);
+      return await tasks.getMany();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} task`;
+  async findOne(id: string) {
+    try {
+      const task = this.taskRepository.findOneOrFail({where: {id}});
+      return await task;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
-  update(id: number, updateTaskDto: UpdateTaskDto) {
-    return `This action updates a #${id} task`;
+  async update(id: string, updateTaskDto: UpdateTaskDto) {
+    try {
+      const updatedTask = this.taskRepository.update(id, updateTaskDto);
+      return await updatedTask;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} task`;
+  async remove(id: string) {
+    try {
+      await this.taskRepository.delete(id);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }

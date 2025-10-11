@@ -46,10 +46,19 @@ export class ProjectsService {
   }
 
   async update(id: string, updateProjectDto: UpdateProjectDto) {
-    const updatedProject = await this.projectRepository.update({id}, updateProjectDto);
+    try {
+      const updatedProject = await this.projectRepository.update({id}, updateProjectDto);
+      return updatedProject;
+    } catch (error) {
+      throw new BadRequestException(error)
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} project`;
+  async remove(id: string) {
+    try {
+      await this.projectRepository.delete(id);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }
