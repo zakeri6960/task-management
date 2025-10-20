@@ -10,64 +10,66 @@ export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Post()
-  @HttpCode(HttpStatus.CREATED)
   async create(
     @Body() createProjectDto: CreateProjectDto,
     @Res() res: Response
   ) {
     const result = await this.projectsService.create(createProjectDto);
-    return {
+    return res.status(HttpStatus.CREATED).json({
       statusCode: HttpStatus.CREATED,
       data: result,
       message: 'Project creation was successful.'
-    }
+    })
   }
 
   @Get()
-  @HttpCode(HttpStatus.FOUND)
   async findAll(
+    @Res() res: Response,
     @Query('status') status?: ProjectsStatusEnum,
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 5
   ) {
     const result = await this.projectsService.findAll(status, page, limit);
-    return {
+    return res.status(HttpStatus.FOUND).json({
       statusCode: HttpStatus.FOUND,
       data: result,
       message: null
-    }
+    })
   }
 
   @Get(':id')
-  @HttpCode(HttpStatus.FOUND)
-  async findOne(@Param('id') id: string) {
+  async findOne(
+  @Res() res: Response,
+  @Param('id') id: string) {
     const result = await this.projectsService.findOne(id);
-    return {
+    return res.status(HttpStatus.FOUND).json({
       statusCode: HttpStatus.FOUND,
       data: result,
       message: null
-    }
+    })
   }
 
   @Patch(':id')
-  @HttpCode(HttpStatus.OK)
-  async update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
+  async update(
+  @Res() res: Response,
+  @Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
     await this.projectsService.update(id, updateProjectDto);
-    return {
+    return res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
       data: null,
       message: 'The project update was successful.'
-    }
+    })
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.OK)
-  async remove(@Param('id') id: string) {
+  async remove(
+  @Res() res: Response,
+  @Param('id') id: string) {
     await this.projectsService.remove(id);
-    return {
+    return res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
       data: null,
       message: 'Project deletion was successful.'
-    }
+    })
   }
 }

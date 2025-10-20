@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,7 +18,7 @@ export class ProjectsService {
       const newProject = this.projectRepository.create(createProjectDto);
       return await this.projectRepository.save(newProject);
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error.message || `Create new project failed`);
     }
   }
 
@@ -32,7 +32,7 @@ export class ProjectsService {
       query.skip((page - 1) * limit).take(limit);
       return await query.getMany();
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new NotFoundException(error.message || `Get projects failed`);
     }
   }
 
@@ -41,7 +41,7 @@ export class ProjectsService {
       const project = await this.projectRepository.findOneOrFail({where: {id}});
       return project;
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new NotFoundException(error?.message || `Project with ID ${id} not found.`);
     }
   }
 
@@ -50,7 +50,7 @@ export class ProjectsService {
       const updatedProject = await this.projectRepository.update({id}, updateProjectDto);
       return updatedProject;
     } catch (error) {
-      throw new BadRequestException(error)
+      throw new BadRequestException(error.message || `Update project with ID ${id} failed`)
     }
   }
 
@@ -58,7 +58,7 @@ export class ProjectsService {
     try {
       await this.projectRepository.delete(id);
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error.message || `Delete project with ID ${id} failed`);
     }
   }
 }

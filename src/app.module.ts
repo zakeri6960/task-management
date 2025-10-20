@@ -5,6 +5,10 @@ import { ProjectsModule } from './projects/projects.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TasksModule } from './tasks/tasks.module';
 import { Project } from './projects/entities/project.entity';
+import * as dotenv from 'dotenv';
+
+
+dotenv.config();
 
 @Module({
   imports: [
@@ -15,7 +19,7 @@ import { Project } from './projects/entities/project.entity';
       host: 'localhost',
       port: 5432,
       username: 'postgres',
-      password: '1234',
+      password: 'zakeri813',
       database: 'task_management',
       autoLoadEntities: true,
       synchronize: true,

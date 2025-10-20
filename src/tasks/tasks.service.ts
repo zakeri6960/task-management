@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,7 +18,7 @@ export class TasksService {
       const newTask = this.taskRepository.create(createTaskDto);
       return await this.taskRepository.save(newTask);
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error.message || `Create new task failed`);
     }
   }
 
@@ -31,17 +31,17 @@ export class TasksService {
       tasks.skip((page - 1) * limit).limit(limit);
       return await tasks.getMany();
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error.message || `Get tasks failed`);
     }
 
-  }
+  } 
 
   async findOne(id: string) {
     try {
       const task = this.taskRepository.findOneOrFail({where: {id}});
       return await task;
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new NotFoundException(error?.message || `Task with ID ${id} not found.`);
     }
   }
 
@@ -50,7 +50,7 @@ export class TasksService {
       const updatedTask = this.taskRepository.update(id, updateTaskDto);
       return await updatedTask;
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error.message || `Update task with ID ${id} failed`);
     }
   }
 
@@ -58,7 +58,7 @@ export class TasksService {
     try {
       await this.taskRepository.delete(id);
     } catch (error) {
-      throw new BadRequestException(error);
+      throw new BadRequestException(error.message || `Delete task with ID ${id} failed`);
     }
   }
 }
