@@ -11,8 +11,8 @@ export class TasksController {
 
   @Post()
   async create(
+    @Res() res: Response,
     @Body() createTaskDto: CreateTaskDto,
-    @Res() res: Response
 ) {
     const result = await this.tasksService.create(createTaskDto);
     return res.status(HttpStatus.CREATED).json({
