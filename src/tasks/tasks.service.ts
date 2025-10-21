@@ -24,11 +24,12 @@ export class TasksService {
 
   async findAll(status?: TasksStatusEnum, page: number = 1, limit: number = 5) {
     try {
-      const tasks = this.taskRepository.createQueryBuilder();
+      const tasks = this.taskRepository.createQueryBuilder('tasks')
+      .leftJoinAndSelect('tasks.project', 'project');
       if(status){
-        tasks.where('status= :x', {x: status});
+        tasks.andWhere('tasks.status= :x', {x: status});
       }
-      tasks.skip((page - 1) * limit).limit(limit);
+      tasks.skip((page - 1) * limit).take(limit);
       return await tasks.getMany();
     } catch (error) {
       throw new BadRequestException(error.message || `Get tasks failed`);
@@ -36,7 +37,7 @@ export class TasksService {
 
   } 
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     try {
       const task = this.taskRepository.findOneOrFail({where: {id}});
       return await task;
@@ -45,7 +46,7 @@ export class TasksService {
     }
   }
 
-  async update(id: string, updateTaskDto: UpdateTaskDto) {
+  async update(id: number, updateTaskDto: UpdateTaskDto) {
     try {
       const updatedTask = this.taskRepository.update(id, updateTaskDto);
       return await updatedTask;
@@ -54,7 +55,7 @@ export class TasksService {
     }
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     try {
       const result = await this.taskRepository.delete(id);
       if(result.affected === 0){

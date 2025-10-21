@@ -36,7 +36,7 @@ export class ProjectsService {
     }
   }
 
-  async findOne(id: string) {
+  async findOne(id: number) {
     try {
       const project = await this.projectRepository.findOneOrFail({where: {id}});
       return project;
@@ -45,7 +45,7 @@ export class ProjectsService {
     }
   }
 
-  async update(id: string, updateProjectDto: UpdateProjectDto) {
+  async update(id: number, updateProjectDto: UpdateProjectDto) {
     try {
       const updatedProject = await this.projectRepository.update({id}, updateProjectDto);
       return updatedProject;
@@ -54,9 +54,12 @@ export class ProjectsService {
     }
   }
 
-  async remove(id: string) {
+  async remove(id: number) {
     try {
-      await this.projectRepository.delete(id);
+      const result= await this.projectRepository.delete(id);
+      if(result.affected === 0){
+        throw new NotFoundException(`Project with ID ${id} not found`)
+      }
     } catch (error) {
       throw new BadRequestException(error.message || `Delete project with ID ${id} failed`);
     }

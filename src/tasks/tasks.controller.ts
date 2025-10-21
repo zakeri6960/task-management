@@ -39,7 +39,7 @@ export class TasksController {
 
   @Get(':id')
   async findOne(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Res() res: Response
 ) {
     const result = await this.tasksService.findOne(id);
@@ -52,7 +52,7 @@ export class TasksController {
 
   @Patch(':id')
   async update(
-    @Param('id') id: string, 
+    @Param('id') id: number, 
     @Body() updateTaskDto: UpdateTaskDto,
     @Res() res: Response
 ) {
@@ -66,7 +66,7 @@ export class TasksController {
 
   @Delete(':id')
   async remove(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Res() res: Response
 ) {
     await this.tasksService.remove(id);

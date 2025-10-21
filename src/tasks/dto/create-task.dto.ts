@@ -1,5 +1,5 @@
 import { Optional } from "@nestjs/common";
-import { IsEnum, IsNotEmpty, IsString } from "class-validator";
+import { IsEnum, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { TasksStatusEnum } from "src/Enums/taskEnums";
 
 export class CreateTaskDto {
@@ -16,5 +16,5 @@ export class CreateTaskDto {
 
     @IsNotEmpty()
     @IsString()
-    project_id: string;
+    project_id: number;
 }

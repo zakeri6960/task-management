@@ -40,7 +40,7 @@ export class ProjectsController {
   @Get(':id')
   async findOne(
   @Res() res: Response,
-  @Param('id') id: string) {
+  @Param('id') id: number) {
     const result = await this.projectsService.findOne(id);
     return res.status(HttpStatus.FOUND).json({
       statusCode: HttpStatus.FOUND,
@@ -52,7 +52,7 @@ export class ProjectsController {
   @Patch(':id')
   async update(
   @Res() res: Response,
-  @Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
+  @Param('id') id: number, @Body() updateProjectDto: UpdateProjectDto) {
     await this.projectsService.update(id, updateProjectDto);
     return res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
@@ -64,7 +64,7 @@ export class ProjectsController {
   @Delete(':id')
   async remove(
   @Res() res: Response,
-  @Param('id') id: string) {
+  @Param('id') id: number) {
     await this.projectsService.remove(id);
     return res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,

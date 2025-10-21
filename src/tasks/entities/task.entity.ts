@@ -1,11 +1,11 @@
 import { TasksStatusEnum } from "src/Enums/taskEnums";
 import { Project } from "src/projects/entities/project.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity({name: 'tasks'})
 export class Task {
     @PrimaryGeneratedColumn()
-    id: string;
+    id: number;
 
     @Column()
     title: string;
@@ -16,8 +16,8 @@ export class Task {
     @Column({type: 'enum', enum: TasksStatusEnum, default: TasksStatusEnum.ToDo})
     status: TasksStatusEnum;
 
-    @Column()
-    project_id: string;
+    @Column({nullable: true})
+    project_id: number;
 
     @ManyToOne(()=> Project, (project)=> project.tasks)
     project: Project
