@@ -15,6 +15,6 @@ export class CreateTaskDto {
     status: TasksStatusEnum = TasksStatusEnum.ToDo;
 
     @IsNotEmpty()
-    @IsString()
+    @IsNumber()
     project_id: number;
 }
